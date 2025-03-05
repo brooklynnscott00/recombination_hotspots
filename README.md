@@ -24,6 +24,7 @@ make
 This is all just instructions for how to install the software that will essentially scan the gelada genome to identify the postition of the binding motifs. You can ignore this for now, but it would be useful for anyone who might want to reproduce these analyses
 
 ## search for motifs in haplotype1 and haplotype2 assemblies 
+
 #### step 1
 
 ``` shell 
@@ -36,6 +37,8 @@ PRDM9_MOTIFS='/scratch/brscott4/gelada/recombination_hotspots/PRDM9_motifs.human
 ```
 Here I am just defining the paths to all the files that I want to reference later and assigning them to a variable name. This way I don't have to list the full file path
 
+#### step2
+
 ```shell
 # convert all mapped reads to a fasta file, excluding unmapped regions
 sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools fasta -o /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa $HAP1_BAM" # 23620252
@@ -44,8 +47,8 @@ sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1
 ```
 Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file, which is the format that FIMO requires as input
 
+----------------
 **currently here, waiting for the above jobs to run**
---------
 **next steps**
 
 ```shell
