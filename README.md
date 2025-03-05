@@ -38,10 +38,22 @@ Here I am just defining the paths to all the files that I want to reference late
 
 ```shell
 # convert all mapped reads to a fasta file, excluding unmapped regions
-sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools fasta -o /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa $HAP1_BAM"
+sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools fasta -o /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa $HAP1_BAM" # 23620252
 
-sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools fasta -o /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa $HAP2_BAM"
+sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools fasta -o /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa $HAP2_BAM" # 23620255
 ```
-Our genome is split into 2 haplotypes. I can explain more about why we did this, but it means that we have to run all of our analyses on both genotypes. These scripts convert what's called a BAM file into a FASTA file, which is the format that FIMO requires as input
+Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file, which is the format that FIMO requires as input
 
+**currently here, waiting for the above jobs to run**
+--------
+**next steps**
+
+```shell
+bgzip /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa
+bgzip /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa
+
+sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools faidx /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa.gz; $(grep chm /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa.gz.fai | cut -f 1) > TID_1039885.hap1.fa"
+
+sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools faidx /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz; $(grep chm /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz.fai | cut -f 1) > TID_1039885.hap2.fa"
+```
 
