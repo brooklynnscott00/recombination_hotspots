@@ -12,13 +12,10 @@ The position weigh matrices (PWMs) representing these motifs are obtained from a
 Download [FIMO (find individual motif occurences)](https://meme-suite.org/meme/doc/fimo.html)
 
 ```shell
-# install meme suite
-cd /scratch/brscott4/downloads/
-wget -c https://meme-suite.org/meme/meme-software/5.5.0/meme-5.5.0.tar.gz
-tar -xf meme-5.5.0.tar.gz
-cd /scratch/brscott4/downloads/meme-5.5.0
-./configure --prefix=$HOME/meme --enable-build-libxml2 --enable-build-libxslt
-make
+# install fimo
+mamba create -n fimo_env -c bioconda -c conda-forge meme
+source activate fimo_env
+
 ```
 This is all just instructions for how to install the software that will essentially scan the gelada genome to identify the postition of the binding motifs. You can ignore this for now, but it would be useful for anyone who might want to reproduce these analyses
 
@@ -68,16 +65,33 @@ zgrep ">" data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz | s
 sbatch scripts/make-masked-fasta.sh # jobID 23797681
 ```
 
+```shell
+module load samtools-1.21-gcc-12.1.0
+HAP1_BAM='/scratch/brscott4/gelada/data/mapped_reads/dnazoo/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.1Mbp.sorted.bam'
+HAP2_BAM='/scratch/brscott4/gelada/data/mapped_reads/dnazoo/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.1Mbp.sorted.bam'
+
+# create a contig to chromosome map from the mapped bam files
+samtools view -F 4 ${HAP1_BAM} | awk '{print $1 "\t" $3 "_" $1}' | sort -u > data/hap1_contig_to_chr_map.txt
+samtools view -F 4 ${HAP2_BAM} | awk '{print $1 "\t" $3 "_" $1}' | sort -u > data/hap2_contig_to_chr_map.txt
+```
+This will be used to rename the sequence names in the masked fasta file 
+
+```shell
+printf "HiC_scaffold_%s\n" {1..21} > data/dnazoo_HiCscaffolds.txt
+
+grep -f <(cut -d'_' -f1 data/dnazoo_HiCscaffolds.txt)     /scratch/brscott4/gelada/data/long_read_genome_assembly/assemblies/joint_pacbio_ont/TID_1039885.hap1.p_ctg.dnazoo-masked.HiC-scaffold_named.fasta.fai     | cut -f1 > data/dnazoo_HiCscaffolds_hap1_full.txt
+
+grep -f <(cut -d'_' -f1 data/dnazoo_HiCscaffolds.txt)     /scratch/brscott4/gelada/data/long_read_genome_assembly/assemblies/joint_pacbio_ont/TID_1039885.hap2.p_ctg.dnazoo-masked.HiC-scaffold_named.fasta.fai     | cut -f1 > data/dnazoo_HiCscaffolds_hap2_full.txt
+
+sbatch scripts/seqkit-replace_rename-contigs.sh # jobID 23799587 
+```
+Rename the sequence name to be the HiC scaffolds
+
+### Step 3 run fimo 
+
 
 **currently here, waiting for the above jobs to run**
 **next steps**
 
-# these grep files are most likely looking for the chromosome IDs so look for unique chrIDs first and then change the command to grep for autosomes
-; $(grep chm /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa.gz.fai | cut -f 1) > TID_1039885.hap1.fa" # job ID 23620329
-
-
-
-; $(grep chm /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz.fai | cut -f 1) > TID_1039885.hap2.fa" # job ID 23620332
-```
 
 
