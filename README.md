@@ -42,7 +42,7 @@ Here I am just defining the paths to all the files that I want to reference late
 # convert all mapped reads to a fasta file, excluding unmapped regions
 sbatch sripts/bam2fasta.sh # job ID 23620655 (DONE)
 ```
-Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file, which is the format that FIMO requires as input
+Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file
 
 ```shell
 # bgzip fasta files (DONE)
@@ -55,7 +55,20 @@ sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1
 
 sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools faidx /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz" # job ID: 23620720 (DONE)
 ```
-----------------
+
+```shell
+# extract sequence headers from mapped reads for hap1
+zgrep ">" data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa.gz | sed 's/>//' > data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.mapped_headers.txt
+
+# extract sequences headers from mapped reads for hap2
+zgrep ">" data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz | sed 's/>//' > data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.mapped_headers.txt
+```
+
+```shell
+sbatch scripts/make-masked-fasta.sh # jobID 23797681
+```
+
+
 **currently here, waiting for the above jobs to run**
 **next steps**
 
