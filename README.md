@@ -21,7 +21,7 @@ This is all just instructions for how to install the software that will essentia
 
 ## search for motifs in haplotype1 and haplotype2 assemblies 
 
-### step 1 (DONE)
+### Step 1 
 
 ``` shell 
 # full path to the bam files
@@ -33,13 +33,13 @@ PRDM9_MOTIFS='/scratch/brscott4/gelada/recombination_hotspots/PRDM9_motifs.human
 ```
 Here I am just defining the paths to all the files that I want to reference later and assigning them to a variable name. This way I don't have to list the full file path
 
-### step 2 Prepare input files
+### Step 2 Prepare input files
 
 ```shell
 # convert all mapped reads to a fasta file, excluding unmapped regions
 sbatch sripts/bam2fasta.sh # job ID 23620655 (DONE)
 ```
-Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file
+Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file, which is what we need as input for FIMO
 
 ```shell
 # bgzip fasta files (DONE)
@@ -52,18 +52,20 @@ sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1
 
 sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools faidx /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz" # job ID: 23620720 (DONE)
 ```
+Some data preparation
 
 ```shell
-# extract sequence headers from mapped reads for hap1
+# extract sequence headers from mapped fasta file for haplotype 1
 zgrep ">" data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.fa.gz | sed 's/>//' > data/TID_1039885.hifiasm.hifi-pacbio.hap1.aligned-dnazoo_HiC.mapped_headers.txt
 
-# extract sequences headers from mapped reads for hap2
+# extract sequences headers from mapped fasta file for haplotype 2
 zgrep ">" data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz | sed 's/>//' > data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.mapped_headers.txt
 ```
 
 ```shell
 sbatch scripts/make-masked-fasta.sh # jobID 23797681
 ```
+This is all a bit complicated, we can go over it more in person but essentially we are making sure that the fasta file only includes reads that have been successfully mapped to the gelada reference genome
 
 ```shell
 module load samtools-1.21-gcc-12.1.0
@@ -74,7 +76,6 @@ HAP2_BAM='/scratch/brscott4/gelada/data/mapped_reads/dnazoo/TID_1039885.hifiasm.
 samtools view -F 4 ${HAP1_BAM} | awk '{print $1 "\t" $3 "_" $1}' | sort -u > data/hap1_contig_to_chr_map.txt
 samtools view -F 4 ${HAP2_BAM} | awk '{print $1 "\t" $3 "_" $1}' | sort -u > data/hap2_contig_to_chr_map.txt
 ```
-This will be used to rename the sequence names in the masked fasta file 
 
 ```shell
 printf "HiC_scaffold_%s\n" {1..21} > data/dnazoo_HiCscaffolds.txt
@@ -85,16 +86,13 @@ grep -f <(cut -d'_' -f1 data/dnazoo_HiCscaffolds.txt)     /scratch/brscott4/gela
 
 sbatch scripts/seqkit-replace_rename-contigs.sh # jobID 23799587 
 ```
-Rename the sequence name to be the HiC scaffolds
+These rename the sequences headers to match the chromosome that each sequences was successfully mapped to
 
 ### Step 3 run fimo 
 
 ```shell
 sbatch scripts/fimo-run.sh # jobID: 23801883
 ```
-
-**currently here, waiting for the above jobs to run**
-**next steps**
 
 
 
