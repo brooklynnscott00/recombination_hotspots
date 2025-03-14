@@ -91,8 +91,11 @@ These rename the sequences headers to match the chromosome that each sequences w
 ### Step 3 run fimo 
 
 ```shell
-sbatch scripts/fimo-run.sh # jobID: 23801883
+sbatch scripts/fimo-run.sh
 ```
-
+(FIMO Hap1)
+jobID: 23824225
+(FIMO Hap2)
+jobID: 23824239
 
 
