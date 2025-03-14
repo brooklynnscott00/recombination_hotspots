@@ -89,6 +89,9 @@ Rename the sequence name to be the HiC scaffolds
 
 ### Step 3 run fimo 
 
+```shell
+sbatch scripts/fimo-run.sh # jobID: 23801883
+```
 
 **currently here, waiting for the above jobs to run**
 **next steps**
