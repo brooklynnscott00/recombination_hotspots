@@ -14,8 +14,10 @@
 module load mamba/latest
 source activate fimo_env
 
-mkdir -p data/hap1_fimo
-mkdir -p data/hap2_fimo
+mkdir -p hap1_fimo
+mkdir -p hap2_fimo
 
-# fimo --oc data/hap1_fimo --verbosity 1 --thresh 1.0E-4 /scratch/brscott4/gelada/recombination_hotspots/PRDM9_motifs.human.txt /scratch/brscott4/gelada/data/long_read_genome_assembly/assemblies/joint_pacbio_ont/TID_1039885.hap1.p_ctg.dnazoo-masked.chr_named.fasta
-fimo --oc data/hap2_fimo --verbosity 1 --thresh 1.0E-4 /scratch/brscott4/gelada/recombination_hotspots/PRDM9_motifs.human.txt /scratch/brscott4/gelada/data/long_read_genome_assembly/assemblies/joint_pacbio_ont/TID_1039885.hap2.p_ctg.dnazoo-masked.chr_named.fasta
+mkdir -p hap1_fimo_test
+
+fimo --oc hap1_fimo_test --verbosity 1 --thresh 1.0E-4 /scratch/brscott4/gelada/recombination_hotspots/PRDM9_motifs.human.txt /scratch/brscott4/gelada/data/long_read_genome_assembly/assemblies/joint_pacbio_ont/TID_1039885.hap1.p_ctg.dnazoo-masked.chr_named.fasta
+# fimo --oc hap2_fimo --verbosity 1 --thresh 1.0E-4 /scratch/brscott4/gelada/recombination_hotspots/PRDM9_motifs.human.txt /scratch/brscott4/gelada/data/long_read_genome_assembly/assemblies/joint_pacbio_ont/TID_1039885.hap2.p_ctg.dnazoo-masked.chr_named.fasta

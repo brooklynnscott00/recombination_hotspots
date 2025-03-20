@@ -94,8 +94,30 @@ These rename the sequences headers to match the chromosome that each sequences w
 sbatch scripts/fimo-run.sh
 ```
 (FIMO Hap1)
-jobID: 23824225
+jobID: 23824225     **DONE**
 (FIMO Hap2)
-jobID: 23824239
+jobID: 23824239     **DONE**
 
+## one of the output files from Hap1 is missing so I need to rerun it
 
+```shell
+sbatch scripts/fimo-run.sh
+```
+output files to `hap1_fimo_test`
+jobID: 24056237
+
+```shell
+mv hap1_fimo/fimo.gff hap1_fimo/TID_1039885_H1.PRDM9.gff
+mv hap1_fimo/fimo.html hap1_fimo/TID_1039885_H1.PRDM9.html
+mv hap1_fimo/fimo.tsv hap1_fimo/TID_1039885_H1.PRDM9.tsv
+mv hap1_fimo/cisml.xml hap1_fimo/cisml.TID_1039885_H1.PRDM9.xml
+mv hap1_fimo/best_site.narrowPeak hap1_fimo/best_site.TID_1039885_H1.PRDM9.narrowPeak
+
+mv hap2_fimo/fimo.gff hap2_fimo/TID_1039885_H2.PRDM9.gff
+mv hap2_fimo/fimo.html hap2_fimo/TID_1039885_H2.PRDM9.html
+mv hap2_fimo/fimo.tsv hap2_fimo/TID_1039885_H2.PRDM9.tsv
+mv hap2_fimo/cisml.xml hap2_fimo/cisml.TID_1039885_H2.PRDM9.xml
+mv hap2_fimo/best_site.narrowPeak hap2_fimo/best_site.TID_1039885_H2.PRDM9.narrowPeak
+mv hap2_fimo/fimo.xml hap2_fimo/TID_1039885_H2.PRDM9.xml
+```
+Rename files -- might need to re do hap1 depending on how the test run goes 
