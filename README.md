@@ -17,7 +17,7 @@ mamba create -n fimo_env -c bioconda -c conda-forge meme
 source activate fimo_env
 
 ```
-This is all just instructions for how to install the software that will essentially scan the gelada genome to identify the postition of the binding motifs. You can ignore this for now, but it would be useful for anyone who might want to reproduce these analyses
+This is all just instructions for how to install the software that will essentially scan the gelada genome to identify the postition of the binding motifs. You can ignore this for now, but it would be useful for anyone who might want to reproduce these analyses  
 
 ## search for motifs in haplotype1 and haplotype2 assemblies 
 
@@ -31,7 +31,7 @@ HAP2_BAM='/scratch/brscott4/gelada/data/mapped_reads/dnazoo/TID_1039885.hifiasm.
 # full path to the binding motifs
 PRDM9_MOTIFS='/scratch/brscott4/gelada/recombination_hotspots/PRDM9_motifs.human.txt'
 ```
-Here I am just defining the paths to all the files that I want to reference later and assigning them to a variable name. This way I don't have to list the full file path
+Here I am just defining the paths to all the files that I want to reference later and assigning them to a variable name. This way I don't have to list the full file path  
 
 ### Step 2 Prepare input files
 
@@ -39,7 +39,7 @@ Here I am just defining the paths to all the files that I want to reference late
 # convert all mapped reads to a fasta file, excluding unmapped regions
 sbatch sripts/bam2fasta.sh # job ID 23620655 (DONE)
 ```
-Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file, which is what we need as input for FIMO
+Our genome is split into 2 haplotypes. I can explain more later about why we did this, but it means that we have to run all of our analyses on both copies. These scripts convert what's called a BAM file into a FASTA file, which is what we need as input for FIMO  
 
 ```shell
 # bgzip fasta files (DONE)
@@ -52,7 +52,7 @@ sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1
 
 sbatch -p htc -c 1 --mem 26G --job-name bam2fasta --wrap "module load samtools-1.16-gcc-11.2.0; samtools faidx /scratch/brscott4/gelada/recombination_hotspots/data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz" # job ID: 23620720 (DONE)
 ```
-Some data preparation
+Some data preparation  
 
 ```shell
 # extract sequence headers from mapped fasta file for haplotype 1
@@ -65,7 +65,7 @@ zgrep ">" data/TID_1039885.hifiasm.hifi-pacbio.hap2.aligned-dnazoo_HiC.fa.gz | s
 ```shell
 sbatch scripts/make-masked-fasta.sh # jobID 23797681
 ```
-This is all a bit complicated, we can go over it more in person but essentially we are making sure that the fasta file only includes reads that have been successfully mapped to the gelada reference genome
+This is all a bit complicated, we can go over it more in person but essentially we are making sure that the fasta file only includes reads that have been successfully mapped to the gelada reference genome  
 
 ```shell
 module load samtools-1.21-gcc-12.1.0
@@ -86,17 +86,17 @@ grep -f <(cut -d'_' -f1 data/dnazoo_HiCscaffolds.txt)     /scratch/brscott4/gela
 
 sbatch scripts/seqkit-replace_rename-contigs.sh # jobID 23799587 
 ```
-These rename the sequences headers to match the chromosome that each sequences was successfully mapped to
+These rename the sequences headers to match the chromosome that each sequences was successfully mapped to  
 
 ### Step 3 run fimo 
 
 ```shell
 sbatch scripts/fimo-run.sh
 ```
-(FIMO Hap1)
-jobID: 23824225     **DONE**
-(FIMO Hap2)
-jobID: 23824239     **DONE**
+(FIMO Hap1)  
+jobID: 23824225     **DONE**   
+(FIMO Hap2)  
+jobID: 23824239     **DONE**  
 
 ```shell
 mv hap1_fimo/fimo.gff hap1_fimo/TID_1039885_H1.PRDM9.gff
@@ -113,4 +113,24 @@ mv hap2_fimo/cisml.xml hap2_fimo/cisml.TID_1039885_H2.PRDM9.xml
 mv hap2_fimo/best_site.narrowPeak hap2_fimo/best_site.TID_1039885_H2.PRDM9.narrowPeak
 mv hap2_fimo/fimo.xml hap2_fimo/TID_1039885_H2.PRDM9.xml
 ```
-Rename files -- might need to re do hap1 depending on how the test run goes 
+Rename files -- might need to re do hap1 depending on how the test run goes    
+
+```shell
+sbatch scripts/tsv-to-bed.sh
+```
+Convert the tsv output file from FIMO into a bed file     
+jobID: 24276208		**DONE**  
+
+
+```shell
+sbatch scripts/count_hits_20kb-windows_hap1.sh
+```
+jobID: 24276644		FAILED  
+jobID: 24276795		FAILED
+jobID: 24276991
+jobID: 24277267
+
+```shell
+sbatch scripts/count_hits_20kb-windows_hap2.sh
+```
+jobID: 24277426
