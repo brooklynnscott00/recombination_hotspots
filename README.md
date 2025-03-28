@@ -123,14 +123,22 @@ jobID: 24276208		**DONE**
 
 
 ```shell
+sed 's/\(_h1tg[0-9]*l\)//g' TID_1039885_H1.PRDM9.bed > TID_1039885_H1.PRDM9.fixed.bed
+
 sbatch scripts/count_hits_20kb-windows_hap1.sh
 ```
-jobID: 24276644		FAILED  
-jobID: 24276795		FAILED
-jobID: 24276991
-jobID: 24277267
+jobID: 24276644		FAILED     
+jobID: 24276795		FAILED  
+jobID: 24276991		FAILED  
+jobID: 24277267		FAILED   
+jobID: 24341790		FAILED   
+jobID: 24341951		**DONE**  
+
 
 ```shell
+sed 's/\(_h1tg[0-9]*l\)//g' TID_1039885_H2.PRDM9.bed > TID_1039885_H2.PRDM9.fixed.bed
+
 sbatch scripts/count_hits_20kb-windows_hap2.sh
 ```
-jobID: 24277426
+jobID: 24277426		FAILED  
+jobID: 24342055
