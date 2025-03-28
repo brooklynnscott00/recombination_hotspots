@@ -25,9 +25,8 @@ for scaffold in HiC_scaffold_{1..21}; do
     echo ${scaffold} ${MOTIF}
     bedtools intersect \
       -a <(bedtools makewindows -g <(cat ${fasta_index} | grep -P "${scaffold}\t" | cut -f 1,2) -w ${window_size}) \
-      -b <(grep -P "^$scaffold\t" hap2_fimo/TID_1039885_H2.fixed.PRDM9.bed | grep -P "$MOTIF\t" | awk -v max_qvalue=$max_qvalue '$8 <= max_qvalue') -c | \
+      -b <(grep -P "^$scaffold\t" hap2_fimo/TID_1039885_H2.PRDM9.fixed.bed | grep -P "$MOTIF\t" | awk -v max_qvalue=$max_qvalue '$8 <= max_qvalue') -c | \
       awk -v OFS='\t' -v motif=$MOTIF '{print($0,motif)}' \
       >> hap2_PRDM9_hits/TID_1039885_H2.PRDM9.${window_size}.bed
   done
 done
-

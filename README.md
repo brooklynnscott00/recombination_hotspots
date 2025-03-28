@@ -136,9 +136,11 @@ jobID: 24341951		**DONE**
 
 
 ```shell
-sed 's/\(_h1tg[0-9]*l\)//g' TID_1039885_H2.PRDM9.bed > TID_1039885_H2.PRDM9.fixed.bed
+sed 's/\(_h2tg[0-9]*l\)//g' TID_1039885_H2.PRDM9.bed > TID_1039885_H2.PRDM9.fixed.bed
 
 sbatch scripts/count_hits_20kb-windows_hap2.sh
 ```
 jobID: 24277426		FAILED  
-jobID: 24342055
+jobID: 24342055		FAILED  
+jobID: 24342750
+jobID: 24342893
